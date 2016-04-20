@@ -35,19 +35,16 @@ NewPing sonar[NUM_SONAR] = { // array of sonar sensor objects
   NewPing(A0, A0, MAX_DISTANCE) // left
 };
 
-bool sensor[NUM_SONAR] = {false, false, false}; // distances to the nearest obstacle
-// indexes 0, 1, and 2 are for left, front, and right respectively
-
-const byte cases[NUM_CASES] = {
-    B0000000, // 0: no obstacles
-    B0000010, // 1: obstacle in front
-    B0000011, // 2: obstacles front and right
-    B0000110, // 3: obstacles front and left
-    B0000111, // 4: obstacles front, left, and right
-    B0000101, // 5: obstacles left and right
-    B0000001, // 6: obstacle to the right
-    B0000100, // 7: obstacle to the left
-};
+/* list of cases
+    B0000000  0: no obstacles
+    B0000001  1: obstacle to the right
+    B0000010  2: obstacle in front
+    B0000011  3: obstacles front and right
+    B0000100  4: obstacle to the left
+    B0000101  5: obstacles left and right
+    B0000110  6: obstacles front and left
+    B0000111  7: obstacles front, left, and right
+*/
 
 byte thisCase = 0;
 
@@ -60,40 +57,40 @@ void setup() {
 
 void loop() {
   updateSensor();
-  switch (compareCases()) {
+  switch (thisCase) {
     // no obstacles
-    case 0:
+    case B00000000:
       straightForward();
       break;
-    // obstacle in front
-    case 1:
-      turnLeft(90);
-      break;
-    // obstacles front and right
-    case 2:
-      turnLeft(90);
-      break;
-    // obstacles front and left
-    case 3:
-      turnRight(90);
-      break;
-    // obstacles front, left, and right
-    case 4:
-      turnLeft(180);
-      break;
-    // obstacles left and right
-    case 5:
-      turnLeft(180);
-      break;
     // obstacle to the right
-    case 6:
+    case B00000001:
       Serial.println("Turn left");
       turnLeft(30);
       break;
+    // obstacle in front
+    case B00000010:
+      turnLeft(90);
+      break;
+    // obstacles front and right
+    case B00000011:
+      turnLeft(90);
+      break;
     // obstacle to the left
-    case 7:
+    case B00000100:
       Serial.println("Turn right");
       turnRight(30);
+      break;
+    // obstacles left and right
+    case B00000101:
+      turnLeft(180);
+      break;
+    // obstacles front and left
+    case B00000110:
+      turnRight(90);
+      break;
+    // obstacles front, left, and right
+    case B00000111:
+      turnLeft(180);
       break;
   }
   delay(100); 
@@ -108,13 +105,6 @@ void updateSensor() {
         if (distance < TURN_DISTANCE)
             thisCase |= (1 << i);
     }
-}
-
-int compareCases() {
-  Serial.println(thisCase);
-  for (int i = 0; i < NUM_CASES; i++) {
-        if (thisCase == cases[i]) return i;
-  }
 }
 
 void setLeftForward() {
