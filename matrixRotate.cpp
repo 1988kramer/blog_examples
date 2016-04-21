@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <cstdlib>
 using namespace std;
 
 int **matrix;
@@ -39,7 +40,7 @@ void rotateLeft(int n)
 	{
 		for (int j = 0; j < n; j++) 
 		{
-			rotateLeftHelper(matrix, i, j, n);
+		  rotateLeftHelper(i, j, n);
 		}
 	}
 }
@@ -51,12 +52,14 @@ void readFile(string fileName, int &n)
 	const char* name = fileName.c_str();
 	ifstream input(name);
 	input >> n;
+	cout << n << endl;
 	matrix = new int*[n];
 	if (!input) 
 	{
 		cerr << "file: " << fileName << " does not exist";
 		exit(1);
 	}
+	cout << "file found" << endl;
 	for (int i = 0; i < n; i++) 
 	{
 		matrix[i] = new int[n];
@@ -64,7 +67,9 @@ void readFile(string fileName, int &n)
 	for (int i = 0; i < n; i++) 
 	{
 		string line;
+		cout << line << endl;
 		getline(input, line);
+		cout << line << endl;
 		istringstream iss(line);
 		for (int j = 0; j < n; j++) 
 		{
@@ -99,7 +104,7 @@ void deleteMatrix(int n)
 int main(int argc, char* argv[]) 
 {
 	int n = 0;
-	readFile(argv[1], int n);
+	readFile(argv[1], n);
 	printMatrix(n);
 	rotateLeft(n);
 	printMatrix(n);
