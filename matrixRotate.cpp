@@ -10,15 +10,28 @@
 #include <sstream>
 #include <string>
 #include <cstdlib>
+#include <pthread.h>
+#include <vector>
 using namespace std;
+
+struct threadParams
+{
+  int row;
+  int column;
+  int n;
+};
 
 int **matrix;
 
 // accepts a pointer to a square two dimensional array 
 // and three ints, the starting row and column indices
 // and the highest index in the matrix, NOT the size
-void rotateLeftHelper(int row, int column, int n) 
+void rotateLeftHelper(void* start) 
 {
+  threadParams* startState = (threadParams*) start;
+  int row = startState->row;
+  int column = startState->column;
+  int n = startState->n;
   int temp = matrix[row][column];
   for (int i = 0; i < 3; i++) 
   {
@@ -36,14 +49,27 @@ void rotateLeftHelper(int row, int column, int n)
 void rotateLeft(int n) 
 {
   int level = n - 1; // switch n from matrix size to highest index
+  // calculate number of threads
+  for (int i = level; i > 1; i -= 2) {
+    numThreads += i;
+  }
+  pthread_t threads[] = new pthread_t[numThreads];
+  int threadCount = 0;
   for (int i = 0; i < n/2; i++) 
   {
     for (int j = i; j < level; j++) 
     {
-      rotateLeftHelper(i, j, n - 1);
+      threadParams current;
+      current.row = i;
+      current.column = j;
+      current.n = n;      
+      pthread_create(&threads[threadCount], NULL, 
+		     &rotateLeftHelper, (void*) &threadParams)
+      threadCount++;
     }
     level--;
   }
+  // still need to join all threads
 }
 
 // accepts a string designating the name of a file
