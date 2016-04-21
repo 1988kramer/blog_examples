@@ -20,7 +20,6 @@ int **matrix;
 void rotateLeftHelper(int row, int column, int n) 
 {
   int temp = matrix[row][column];
-  cout << "temp: " << temp << endl;
   for (int i = 0; i < 3; i++) 
   {
     int nextRow = column;
@@ -36,14 +35,14 @@ void rotateLeftHelper(int row, int column, int n)
 // and an int, the matrix size
 void rotateLeft(int n) 
 {
-  cout << "Rotating!" << endl;
-  n -= 1; // switch n from matrix size to highest index
+  int level = n - 1; // switch n from matrix size to highest index
   for (int i = 0; i < n/2; i++) 
   {
-    for (int j = 0; j < n; j++) 
+    for (int j = i; j < level; j++) 
     {
-      rotateLeftHelper(i, j, n);
+      rotateLeftHelper(i, j, n - 1);
     }
+    level--;
   }
 }
 
@@ -62,7 +61,6 @@ void readFile(string fileName, int &n)
   getline(input, line);
   istringstream iss(line);
   iss >> n;
-  cout << n << endl;
   matrix = new int*[n];
   for (int i = 0; i < n; i++) 
   {
@@ -72,7 +70,6 @@ void readFile(string fileName, int &n)
   {
     getline(input, line);
     istringstream iss(line);
-    cout << line << endl;
     for (int j = 0; j < n; j++) 
     {
       iss >> matrix[i][j];
