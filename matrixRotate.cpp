@@ -20,15 +20,15 @@ int **matrix;
 void rotateLeftHelper(int row, int column, int n) 
 {
   int temp = matrix[row][column];
-  cout << "temp: " << endl;
+  cout << "temp: " << temp << endl;
   for (int i = 0; i < 3; i++) 
-    {
-      int nextRow = column;
-      int nextColumn = n - row;
-      matrix[row][column] = matrix[nextRow][nextColumn];
-      row = nextRow;
-      column = nextColumn;
-    }
+  {
+    int nextRow = column;
+    int nextColumn = n - row;
+    matrix[row][column] = matrix[nextRow][nextColumn];
+    row = nextRow;
+    column = nextColumn;
+  }
   matrix[row][column] = temp;
 }
 
@@ -38,7 +38,7 @@ void rotateLeft(int n)
 {
   cout << "Rotating!" << endl;
   n -= 1; // switch n from matrix size to highest index
-  for (int i = 0; i <= n/2; i++) 
+  for (int i = 0; i < n/2; i++) 
   {
     for (int j = 0; j < n; j++) 
     {
@@ -51,33 +51,33 @@ void rotateLeft(int n)
 // reads the contents of the file into a 2 dimensional array
 void readFile(string fileName, int &n)
 {
-	const char* name = fileName.c_str();
-	ifstream input(name);
-	if (!input) 
-	{
-		cerr << "file: " << fileName << " does not exist";
-		exit(1);
-	}
-	cout << "file found" << endl;
-	string line;
-	getline(input, line);
-	istringstream iss(line);
-	iss >> n;
-	cout << n << endl;
-	matrix = new int*[n];
-	for (int i = 0; i < n; i++) 
-	{
-		matrix[i] = new int[n];
-	}
-	for (int i = 0; i < n; i++) 
-	{
-		getline(input, line);
-		istringstream iss(line);
-		for (int j = 0; j < n; j++) 
-		{
-			iss >> matrix[i][j];
-		}
-	}
+  const char* name = fileName.c_str();
+  ifstream input(name);
+  if (!input) 
+  {
+    cerr << "file: " << fileName << " does not exist";
+    exit(1);
+  }
+  string line;
+  getline(input, line);
+  istringstream iss(line);
+  iss >> n;
+  cout << n << endl;
+  matrix = new int*[n];
+  for (int i = 0; i < n; i++) 
+  {
+    matrix[i] = new int[n];
+  }
+  for (int i = 0; i < n; i++) 
+  {
+    getline(input, line);
+    istringstream iss(line);
+    cout << line << endl;
+    for (int j = 0; j < n; j++) 
+    {
+      iss >> matrix[i][j];
+    }
+  }
 }
 
 void printMatrix(int n) 
