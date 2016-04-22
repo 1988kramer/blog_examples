@@ -26,7 +26,7 @@ int **matrix;
 // accepts a pointer to a square two dimensional array 
 // and three ints, the starting row and column indices
 // and the highest index in the matrix, NOT the size
-void rotateLeftHelper(void* start) 
+void* rotateLeftHelper(void* start) 
 {
   threadParams* startState = (threadParams*) start;
   int row = startState->row;
@@ -50,26 +50,44 @@ void rotateLeft(int n)
 {
   int level = n - 1; // switch n from matrix size to highest index
   // calculate number of threads
+  int numThreads = 0;
   for (int i = level; i > 1; i -= 2) {
     numThreads += i;
   }
-  pthread_t threads[] = new pthread_t[numThreads];
-  int threadCount = 0;
+  pthread_t *threads;
+  threads = new pthread_t[numThreads];
+  int curThread = 0;
+  /*
+  threadParams current;
+  current.row = 0;
+  current.column = 0;
+  current.n = level;
+  pthread_t test;
+  pthread_create(&test, NULL, &rotateLeftHelper, (void*) &current);
+  pthread_join(test, NULL);
+  */
   for (int i = 0; i < n/2; i++) 
   {
     for (int j = i; j < level; j++) 
     {
+      cout << "Creating thread " << curThread << "!" << endl;
       threadParams current;
       current.row = i;
       current.column = j;
-      current.n = n;      
-      pthread_create(&threads[threadCount], NULL, 
-		     &rotateLeftHelper, (void*) &threadParams)
-      threadCount++;
+      current.n = level;      
+      pthread_create(&threads[curThread], NULL, 
+		     &rotateLeftHelper, (void*) &current);
+      cout << "thread " << curThread << " created with row = " << current.row
+	   << " and column = " << current.column << endl;
+      curThread++;
     }
     level--;
   }
-  // still need to join all threads
+  // join all threads
+  for (int i = 0; i < numThreads; i++) 
+  {
+    pthread_join(threads[i], NULL);
+  }
 }
 
 // accepts a string designating the name of a file
