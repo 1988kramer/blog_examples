@@ -55,7 +55,9 @@ void rotateLeft(int n)
     numThreads += i;
   }
   pthread_t *threads;
+  cout << "creating " << n << " threads" << endl;
   threads = new pthread_t[numThreads];
+  cout << "numThreads is now " << numThreads << endl;
   int curThread = 0;
   /*
   threadParams current;
@@ -74,7 +76,7 @@ void rotateLeft(int n)
       threadParams current;
       current.row = i;
       current.column = j;
-      current.n = level;      
+      current.n = n - 1;
       pthread_create(&threads[curThread], NULL, 
 		     &rotateLeftHelper, (void*) &current);
       cout << "thread " << curThread << " created with row = " << current.row
@@ -84,9 +86,11 @@ void rotateLeft(int n)
     level--;
   }
   // join all threads
-  for (int i = 0; i < numThreads; i++) 
+  cout << "joining " << numThreads << " threads" << endl;
+  for (int i = 0; i <= numThreads; i++) 
   {
     pthread_join(threads[i], NULL);
+    cout << "thread " << i << " joined" << endl;
   }
 }
 
