@@ -11,7 +11,6 @@
 #include <string>
 #include <cstdlib>
 #include <pthread.h>
-#include <vector>
 using namespace std;
 
 struct threadParams
