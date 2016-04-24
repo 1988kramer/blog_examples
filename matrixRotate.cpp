@@ -31,6 +31,7 @@ void* rotateLeftHelper(void* start)
   threadParams* startState = (threadParams*) start;
   int row = startState->row;
   int column = startState->column;
+  // cout << "starting thread on {" << row <<  ", " << column << "}" << endl;
   int n = startState->n;
   int temp = matrix[row][column];
   for (int i = 0; i < 3; i++) 
@@ -55,30 +56,33 @@ void rotateLeft(int n)
     numThreads += i;
   }
   pthread_t *threads;
+  threadParams *parameters;
   threads = new pthread_t[numThreads];
+  parameters = new threadParams[numThreads];
   int curThread = 0;
   for (int i = 0; i < n/2; i++) 
   {
     for (int j = i; j < level; j++) 
     {
-      cout << "Creating thread " << curThread << "!" << endl;
-      threadParams current;
-      current.row = i;
-      current.column = j;
-      current.n = n - 1;
+      parameters[curThread].row = i;
+      parameters[curThread].column = j;
+      parameters[curThread].n = n - 1;
+      // cout << "creating thread on {" << i << ", " << j << "}" << endl;
       pthread_create(&threads[curThread], NULL, 
-		     &rotateLeftHelper, (void*) &current);
+		     &rotateLeftHelper, (void*) &parameters[curThread]);
       curThread++;
     }
     level--;
   }
   // join all threads
-  cout << "joining " << numThreads << " threads" << endl;
+  // cout << "joining " << numThreads << " threads" << endl;
   for (int i = 0; i < numThreads; i++) 
   {
     pthread_join(threads[i], NULL);
-    cout << "thread " << i << " joined" << endl;
+    // cout << "thread " << i << " joined" << endl;
   }
+  delete[] threads;
+  delete[] parameters;
 }
 
 // accepts a string designating the name of a file
